@@ -198,7 +198,7 @@ def collect():
         "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
     }
     today_midnight = datetime.now(KST).replace(hour=0, minute=0, second=0, microsecond=0)
-    cutoff = today_midnight - timedelta(days=3)  # 3일 윈도우
+    cutoff = today_midnight - timedelta(days=1)  # 전일~금일
 
     all_results = {}
 
@@ -309,7 +309,7 @@ def esc(s):
 def generate_html(results):
     now = datetime.now(KST)
     today = now.strftime("%Y년 %m월 %d일 %H:%M")
-    d_range = f"{(now - timedelta(days=3)).strftime('%m.%d')} ~ {now.strftime('%m.%d')}"
+    d_range = f"{(now - timedelta(days=1)).strftime('%m.%d')} ~ {now.strftime('%m.%d')}"
     total = sum(len(v) for v in results.values())
 
     sections_html = []
