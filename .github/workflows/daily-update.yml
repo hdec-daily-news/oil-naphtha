@@ -2,8 +2,10 @@ name: Daily Oil/Naphtha Update
 
 on:
   schedule:
-    # KST 오전 7:00 (UTC 22:00)
-    - cron: '0 22 * * *'
+    # KST 06:40 (UTC 21:40) — 정각은 GitHub 크론 혼잡으로 스킵되므로 off-peak 사용
+    - cron: '40 21 * * *'
+    # KST 06:55 (UTC 21:55) — 1차 실패 대비 재시도
+    - cron: '55 21 * * *'
   workflow_dispatch:
 
 jobs:
