@@ -166,7 +166,7 @@ def _dedupe_articles(arts):
     for art in arts:
         is_dup = False
         for k in kept:
-            if _similar(art["title"], k["title"]) >= 0.45:
+            if _similar(art["title"], k["title"]) >= 0.35:
                 is_dup = True
                 k["_hits"] += art["_hits"]  # 유사기사 hits 합산
                 break
@@ -278,14 +278,19 @@ def collect():
         # 중복 제거 (제목 유사도 + 키워드 overlap)
         deduped = _dedupe_articles(list(seen.values()))
 
-        # 품질 기준 (hit 많고 최신순 + 매체 가점), 섹터당 10개 내외
+        # 품질 기준 (hit 많고 최신순 + 매체 가점), 섹터당 최소 4 ~ 최대 7
         def _score(a):
             return a["_hits"] * 2 + _press_bonus(a["source"])
         deduped.sort(key=lambda a: (-_score(a), -a["datetime"].timestamp()))
-        # Tier1 언론 또는 2+ hit 통과, 최대 12건 (억지로 채우지 않음)
+        MIN_N, MAX_N = 4, 7
         quality = [a for a in deduped if _score(a) >= 3]
-        all_results[cat] = quality[:12]
-        print(f"  [{cat}] 중복 제거 후 {len(deduped)}건 → 품질 통과 {len(quality)}건 → {len(all_results[cat])}건 표시")
+        if len(quality) >= MIN_N:
+            selected = quality[:MAX_N]
+        else:
+            # 품질 통과가 4건 미만이면 점수 무관 상위 4건으로 보충
+            selected = deduped[:MIN_N]
+        all_results[cat] = selected
+        print(f"  [{cat}] 중복 제거 후 {len(deduped)}건 → 품질 통과 {len(quality)}건 → {len(selected)}건 표시")
 
     return all_results
 
