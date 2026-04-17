@@ -407,6 +407,8 @@ def generate_html(results):
       <span>업데이트 {today}</span>
       <span class="sep">·</span>
       <span>수집기간 {d_range}</span>
+      <span class="sep">·</span>
+      <span class="auto-badge">🔄 매일 08시 / 12시 자동업데이트</span>
     </div>
   </header>
 
